@@ -10,38 +10,39 @@
       A base job that prepares Contrail VNC sandbox using Android repo,
       as opposed to the contrail-src-base job that copies the sources directly.
     required-projects:
-      - tungstenfabric/analytics
-      - tungstenfabric-tools/ansible-deployer
-      - tungstenfabric/api-client
-      - tungstenfabric-tools/build
-      - tungstenfabric/common
-      - tungstenfabric/controller
-      - name: tungstenfabric/dpdk
+      - Juniper/contrail-analytics
+      - Juniper/contrail-ansible-deployer
+      - Juniper/contrail-api-client
+      - Juniper/contrail-build
+      - Juniper/contrail-common
+      - Juniper/contrail-controller
+      - name: Juniper/contrail-dpdk
         override-checkout: contrail_dpdk_17_11_3
-      - tungstenfabric-tools/fabric-utils
-      - tungstenfabric/generateDS
-      - tungstenfabric/java-api
-      - tungstenfabric/openstack-heat
-      - tungstenfabric/neutron-plugin
-      - tungstenfabric/nova-vif-driver
-      - tungstenfabric-tools/packages
-      - tungstenfabric-tools/provisioning
-      - tungstenfabric/specs
-      - tungstenfabric/test
-      - tungstenfabric-tools/third-party
-      - tungstenfabric-tools/tripleo-puppet
-      - tungstenfabric/vcenter-manager
-      - tungstenfabric/vcenter-plugin
-      - tungstenfabric/vnc
-      - tungstenfabric/vrouter
-      - tungstenfabric/vrouter-java-api
-      - tungstenfabric/vro-plugin
-      - tungstenfabric/web-controller
-      - tungstenfabric/web-core
-      - tungstenfabric/web-server-manager
-      - tungstenfabric/web-storage
-      - tungstenfabric/webui-third-party
-      - tungstenfabric/vijava
+      - Juniper/contrail-fabric-utils
+      - Juniper/contrail-generateDS
+      - Juniper/contrail-java-api
+      - Juniper/contrail-heat
+      - Juniper/contrail-neutron-plugin
+      - Juniper/contrail-nova-vif-driver
+      - Juniper/contrail-packages
+      - Juniper/contrail-provisioning
+      - Juniper/contrail-sandesh
+      - Juniper/contrail-specs
+      - Juniper/contrail-test
+      - Juniper/contrail-third-party
+      - Juniper/contrail-tripleo-puppet
+      - Juniper/contrail-vcenter-manager
+      - Juniper/contrail-vcenter-plugin
+      - Juniper/contrail-vnc
+      - Juniper/contrail-vrouter
+      - Juniper/contrail-vrouter-java-api
+      - Juniper/contrail-vro-plugin
+      - Juniper/contrail-web-controller
+      - Juniper/contrail-web-core
+      - Juniper/contrail-web-server-manager
+      - Juniper/contrail-web-storage
+      - Juniper/contrail-webui-third-party
+      - Juniper/vijava
     irrelevant-files:
       - specs/.*
     pre-run: playbooks/contrail-vnc-base2/pre.yaml
@@ -54,40 +55,53 @@
       A base job that prepares Contrail VNC sandbox using Android repo,
       as opposed to the contrail-src-base job that copies the sources directly.
     required-projects:
-      - tungstenfabric/analytics
-      - tungstenfabric/api-client
-      - tungstenfabric-tools/build
-      - tungstenfabric/common
-      - tungstenfabric/controller
-      - name: tungstenfabric/dpdk
+      - Juniper/contrail-analytics
+      - Juniper/contrail-api-client
+      - Juniper/contrail-build
+      - Juniper/contrail-common
+      - Juniper/contrail-controller
+      - name: Juniper/contrail-dpdk
         override-checkout: contrail_dpdk_18_05_1
-      - tungstenfabric-tools/fabric-utils
-      - tungstenfabric/generateDS
-      - tungstenfabric/java-api
-      - tungstenfabric/openstack-heat
-      - tungstenfabric/neutron-plugin
-      - tungstenfabric/nova-vif-driver
-      - tungstenfabric-tools/packages
-      - tungstenfabric-tools/provisioning
-      - tungstenfabric/specs
-      - tungstenfabric/test
-      - tungstenfabric-tools/third-party
-      - tungstenfabric-tools/tripleo-puppet
-      - tungstenfabric/vcenter-manager
-      - tungstenfabric/vcenter-plugin
-      - tungstenfabric/vnc
-      - tungstenfabric/vrouter
-      - tungstenfabric/vrouter-java-api
-      - tungstenfabric/vro-plugin
-      - tungstenfabric/web-controller
-      - tungstenfabric/web-core
-      - tungstenfabric/web-server-manager
-      - tungstenfabric/web-storage
-      - tungstenfabric/webui-third-party
-      - tungstenfabric/vijava
+      - Juniper/contrail-fabric-utils
+      - Juniper/contrail-generateDS
+      - Juniper/contrail-java-api
+      - Juniper/contrail-heat
+      - Juniper/contrail-neutron-plugin
+      - Juniper/contrail-nova-vif-driver
+      - Juniper/contrail-packages
+      - Juniper/contrail-provisioning
+      - Juniper/contrail-sandesh
+      - Juniper/contrail-specs
+      - Juniper/contrail-test
+      - Juniper/contrail-third-party
+      - Juniper/contrail-tripleo-puppet
+      - Juniper/contrail-vcenter-manager
+      - Juniper/contrail-vcenter-plugin
+      - Juniper/contrail-vnc
+      - Juniper/contrail-vrouter
+      - Juniper/contrail-vrouter-java-api
+      - Juniper/contrail-vro-plugin
+      - Juniper/contrail-web-controller
+      - Juniper/contrail-web-core
+      - Juniper/contrail-web-server-manager
+      - Juniper/contrail-web-storage
+      - Juniper/contrail-webui-third-party
+      - Juniper/vijava
     irrelevant-files:
       - specs/.*
     pre-run: playbooks/contrail-vnc-base2/pre.yaml
+
+- job:
+    name: contrail-vnc-unittest-base
+    parent: contrail-vnc-base2
+    description: |
+      Runs unittest suite using Contrail VNC sandbox.
+      Requires nodeset.
+    irrelevant-files:
+      - specs/.*
+    run: playbooks/contrail-vnc-unittest/main.yaml
+    post-run: playbooks/contrail-vnc-unittest/post.yaml
+    timeout: 36000
 
 - job:
     name: contrail-sanity-base
@@ -97,8 +111,6 @@
       Requires run playbook and nodeset.
     pre-run: playbooks/contrail-sanity-base/pre.yaml
     post-run: playbooks/contrail-sanity-base/post.yaml
-    vars:
-      setup_docker_registry: True
 
 - job:
     name: contrail-sanity-kolla-base
@@ -109,10 +121,10 @@
     pre-run: playbooks/contrail-sanity-kolla-base/pre.yaml
     run: playbooks/contrail-sanity-kolla-base/run.yaml
     required-projects:
-      - tungstenfabric-tools/ansible-deployer
-      - name: tungstenfabric-tools/kolla-ansible
+      - Juniper/contrail-ansible-deployer
+      - name: Juniper/contrail-kolla-ansible
         override-checkout: contrail/ocata
-      - tungstenfabric/test
+      - Juniper/contrail-test
     vars:
       cloud_orchestrator: openstack
       kolla_docker_distro: centos
@@ -129,11 +141,11 @@
       cloud_orchestrator: kubernetes # yes, this is correct..
       test_target: ci_openshift
     required-projects:
-      - name: tungstenfabric-tools/openshift-ansible
+      - name: Juniper/openshift-ansible
         override-checkout: release-3.9-contrail
-      - tungstenfabric/test
+      - Juniper/contrail-test
     roles:
-      - zuul: tungstenfabric-tools/openshift-ansible
+      - zuul: Juniper/openshift-ansible
 
 - job:
     name: contrail-helm-base
@@ -142,10 +154,10 @@
       A job that deploys Contrail and OpenStack containers using contrail-helm-deployer
     post-run: playbooks/contrail-sanity-ubuntu1604-helm-ocata/post.yaml
     required-projects:
-      - tungstenfabric-tools/openstack-helm
-      - tungstenfabric-tools/helm-deployer
-      - tungstenfabric-tools/openstack-helm-infra
-      - tungstenfabric/test
+      - Juniper/openstack-helm
+      - Juniper/contrail-helm-deployer
+      - Juniper/openstack-helm-infra
+      - Juniper/contrail-test
     vars:
       cloud_orchestrator: openstack
       contrail_deployer: helm
@@ -154,7 +166,7 @@
         - name: helm-aio
           label: ubuntu-xenial-builder-xxlarge
     roles:
-      - zuul: tungstenfabric-tools/helm-deployer
+      - zuul: Juniper/contrail-helm-deployer
 
 - job:
     name: build-third-party-rpms-base
@@ -172,7 +184,7 @@
     description: |
       Base job used to work on dev-env.
     required-projects:
-      - name: tungstenfabric-tools/dev-env
+      - name: Juniper/contrail-dev-env
         override-checkout: master
     nodeset: builder-centos-7
 
@@ -183,8 +195,6 @@
       Prepares basic docker configuration - proxy and insecure registries.
       Requires nodeset and run playbook.
     pre-run: playbooks/docker-base/pre.yaml
-    vars:
-      setup_docker_registry: True
 
 - job:
     name: contrail-build-containers-base
@@ -198,15 +208,15 @@
       Requires nodeset and openstack_version.
     run: playbooks/contrail-build-containers-base/run.yaml
     required-projects:
-      - tungstenfabric-tools/container-builder
-      - tungstenfabric-tools/ansible-deployer
-      - tungstenfabric-tools/deployers-containers
-      - tungstenfabric-tools/kolla-ansible
-      - name: tungstenfabric-tools/openshift-ansible
+      - Juniper/contrail-container-builder
+      - Juniper/contrail-ansible-deployer
+      - Juniper/contrail-deployers-containers
+      - Juniper/contrail-kolla-ansible
+      - name: Juniper/openshift-ansible
         override-checkout: release-3.9-contrail
-      - tungstenfabric-tools/helm-deployer
-      - tungstenfabric-tools/openstack-helm
-      - tungstenfabric-tools/openstack-helm-infra
+      - Juniper/contrail-helm-deployer
+      - Juniper/openstack-helm
+      - Juniper/openstack-helm-infra
 
 - job:
     name: contrail-build-containers-base
@@ -217,15 +227,15 @@
       Requires nodeset and openstack_version.
     run: playbooks/contrail-build-containers-base/run.yaml
     required-projects:
-      - tungstenfabric-tools/container-builder
-      - tungstenfabric-tools/ansible-deployer
-      - tungstenfabric-tools/deployers-containers
-      - tungstenfabric-tools/kolla-ansible
-      - name: tungstenfabric-tools/openshift-ansible
+      - Juniper/contrail-container-builder
+      - Juniper/contrail-ansible-deployer
+      - Juniper/contrail-deployers-containers
+      - Juniper/contrail-kolla-ansible
+      - name: Juniper/openshift-ansible
         override-checkout: release-3.11-contrail
-      - tungstenfabric-tools/helm-deployer
-      - tungstenfabric-tools/openstack-helm
-      - tungstenfabric-tools/openstack-helm-infra
+      - Juniper/contrail-helm-deployer
+      - Juniper/openstack-helm
+      - Juniper/openstack-helm-infra
 
 - job:
     name: contrail-vnc-unittest-tntestr-base
@@ -241,4 +251,4 @@
       Adds yum-repos-prepare in untrusted context.
     pre-run: playbooks/contrail-base-untrusted/pre.yaml
     required-projects:
-      - tungstenfabric-infra/project-config
+      - Juniper/contrail-project-config

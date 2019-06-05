@@ -95,7 +95,7 @@ def translate(zuul_projects, sandbox_root, manifest_path):
         except KeyError:
             project_relative_path = project.attrib['name']
         sandbox_path = os.path.join(sandbox_root, project_relative_path)
-        origins[sandbox_path] = "https://%s" % (zuul_project['canonical_name'],)
+        origins[sandbox_path] = "http://%s" % (zuul_project['canonical_name'],)
 
     return dump_xml(manifest), origins
 

@@ -1,4 +1,4 @@
-# templated from: https://github.com/tungstenfabric/intent-service-kubernetes-docs/blob/master/install/openshift/3.9/standalone-openshift.md
+# templated from: https://github.com/Juniper/contrail-kubernetes-docs/blob/master/install/openshift/3.9/standalone-openshift.md
 [OSEv3:children]
 masters
 nodes
@@ -30,15 +30,14 @@ openshift_docker_insecure_registries={{ contrail_docker_registry }}
 openshift_use_contrail=true
 nested_mode_contrail=false
 contrail_version={{ contrail_major_version }}
-contrail_container_tag={% if contrail_image_os %}{{ contrail_image_os }}-{% endif %}{{ openstack_version }}-{{ contrail_version }}
+contrail_container_tag={% if contrail_image_os %}{{ contrail_image_os }}-{% endif %}{{ contrail_version }}
 contrail_registry={{ contrail_docker_registry }}
 # Username /Password for private Docker regiteries
 #contrail_registry_username=test
 #contrail_registry_password=test
 # Below option presides over contrail masters if set
-#vrouter_physical_interface={{ hostvars['openshift-master'].ansible_default_ipv4.interface }}
+vrouter_physical_interface={{ hostvars['openshift-master'].ansible_default_ipv4.interface }}
 contrail_vip={{ hostvars['openshift-master'].ansible_default_ipv4.address }}
-vrouter_gateway={{ hostvars['openshift-compute'].ansible_default_ipv4.gateway }}
 #docker_version=1.13.1
 
 # Contrail_vars

@@ -1,0 +1,63 @@
+---
+
+- name: prepare config directory
+  file:
+    path: "{{ devenv_dir }}/config/etc"
+    state: directory
+    recurse: true
+
+- name: copy repository files
+  become: yes
+  command: "cp -fR {{ item }} {{ devenv_dir }}/config{{ item }}"
+  with_items:
+    - /etc/pip.conf
+    - /etc/yum.repos.d
+    - /etc/yum.conf
+
+# TODO: try to commonize it with yum-prepare-repos
+# this file is needed because of container-builder. it builds
+# containers using just templates in its folder.
+- name: prepare tpc.repo.template for contaniers build inside devenv
+  template:
+    src: tpc.repo.template.j2
+    dest: "{{ devenv_dir }}/tpc.repo.template"
+
+- name: prepare google-chrome.repo for test contanier build inside devenv
+  template:
+    src: google-chrome.repo.j2
+    dest: "{{ test_dir }}/docker/base/google-chrome.repo"
+
+- name: Prepare packaging variables
+  contrail_packaging:
+    zuul: "{{ zuul }}"
+    release_type: "{{ release_type }}"
+    build_number: "{{ build_number | default('unset_build_number') }}"
+
+- name: Prepare build configuration - {{ item }}.tmpl
+  template:
+    src: common.env.j2
+    dest: "{{ devenv_dir }}/common.env.tmpl"
+
+- name: Build containers
+  shell: "./startup.sh"
+  become: true
+  args:
+    chdir: "{{ devenv_dir }}"
+  environment:
+    IMAGE: "{{ devenv_image_name }}"
+    DEVENVTAG: "{{ devenv_image_tag }}"
+    AUTOBUILD: 1
+    BUILD_DEV_ENV_ON_PULL_FAIL: 1
+    BUILD_TEST_CONTAINERS: 1
+    SRC_ROOT: "{{ ansible_env.HOME }}/{{ packaging.target_dir }}"
+    EXTERNAL_REPOS: "{{ ansible_env.HOME }}/src"
+    CANONICAL_HOSTNAME: "{{ zuul.project.canonical_hostname }}"
+    REGISTRY_IP: "{{ contrail_docker_registry.split(':')[0] }}"
+    REGISTRY_PORT: "{{ contrail_docker_registry.split(':')[1] }}"
+    SITE_MIRROR: "http://{{ zuul_site_mirror_fqdn }}/repository"
+  tags:
+  - skip_ansible_lint
+
+- name: Push devenv docker image
+  command: "docker push {{ devenv_image_name }}:{{ devenv_image_tag }}"
+  become: true

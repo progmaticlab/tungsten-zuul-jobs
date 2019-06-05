@@ -1,6 +1,6 @@
 ---
 
-# source: https://github.com/tungstenfabric/intent-service-kubernetes-docs/blob/master/install/openshift/3.9/redhat/configurations.md
+# source: https://github.com/Juniper/contrail-kubernetes-docs/blob/master/install/openshift/3.9/redhat/configurations.md
 
 - name: install OpenShift Container Platform utilities
   package:

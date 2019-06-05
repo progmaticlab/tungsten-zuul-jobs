@@ -9,11 +9,25 @@
           label: centos-7-4-builder
 
 - job:
+    name: contrail-vnc-build-package-centos74-isolated
+    parent: contrail-vnc-build-package-el-base
+    nodeset:
+      nodes:
+        - name: builder
+          label: centos-7-isolated
+
+- job:
     name: contrail-vnc-build-package-rhel7-queens
     parent: contrail-vnc-build-package-el-base
     nodeset: builder-rhel-7
     vars:
       openstack_version: queens
+
+- job:
+    name: contrail-vnc-unittest-centos7
+    parent: contrail-vnc-unittest-base
+    voting: False
+    nodeset: builder-centos-7
 
 - job:
     name: contrail-vnc-unittest-centos7-tntestr
@@ -28,7 +42,7 @@
     name: contrail-sanity-centos7-kolla-ocata
     parent: contrail-sanity-kolla-base
     required-projects:
-      - name: tungstenfabric-tools/kolla-ansible
+      - name: Juniper/contrail-kolla-ansible
         override-checkout: contrail/ocata
     vars:
       openstack_version: ocata
@@ -39,7 +53,7 @@
     name: contrail-sanity-centos7-kolla-queens
     parent: contrail-sanity-kolla-base
     required-projects:
-      - name: tungstenfabric-tools/kolla-ansible
+      - name: Juniper/contrail-kolla-ansible
         override-checkout: contrail/queens
     vars:
       openstack_version: queens
@@ -50,7 +64,7 @@
     name: contrail-sanity-centos7-kolla-queens-multinode
     parent: contrail-sanity-kolla-base
     required-projects:
-      - name: tungstenfabric-tools/kolla-ansible
+      - name: Juniper/contrail-kolla-ansible
         override-checkout: contrail/queens
     vars:
       openstack_version: queens
@@ -62,7 +76,7 @@
     branches: ^(R5.1|master|contrail\/rocky)$
     parent: contrail-sanity-kolla-base
     required-projects:
-      - name: tungstenfabric-tools/kolla-ansible
+      - name: Juniper/contrail-kolla-ansible
         override-checkout: contrail/rocky
     vars:
       openstack_version: rocky
@@ -74,7 +88,7 @@
     parent: contrail-sanity-kolla-base
     pre-run: playbooks/contrail-sanity-kolla-base/redhat-pre.yaml
     required-projects:
-      - name: tungstenfabric-tools/kolla-ansible
+      - name: Juniper/contrail-kolla-ansible
         override-checkout: contrail/queens
     vars:
       openstack_version: queens
@@ -89,8 +103,8 @@
       A job that first deploys Contrail containers and a Kubernetes cluster
       using contrail-ansible-deployer and runs sanity test suite on setup CI.
     required-projects:
-      - tungstenfabric-tools/ansible-deployer
-      - tungstenfabric/test
+      - Juniper/contrail-ansible-deployer
+      - Juniper/contrail-test
     vars:
       openstack_version: ocata
       cloud_orchestrator: kubernetes
@@ -106,9 +120,9 @@
       using contrail-ansible-deployer, switches Configuration Node components to contrail-go
       and runs sanity test suite on setup CI.
     required-projects:
-      - tungstenfabric/intent-service
-      - tungstenfabric-tools/ansible-deployer
-      - tungstenfabric/test
+      - Juniper/contrail
+      - Juniper/contrail-ansible-deployer
+      - Juniper/contrail-test
     vars:
       cloud_orchestrator: kubernetes
       test_target: ci_contrail_go_k8s_sanity
@@ -123,11 +137,11 @@
       Deploy Contrail containers and a Openstack cluster using contrail-ansible-deployer
       and switch Configuration Node components to contrail-go on setup CI.
     required-projects:
-      - tungstenfabric/intent-service
-      - tungstenfabric-tools/ansible-deployer
-      - name: tungstenfabric-tools/kolla-ansible
+      - Juniper/contrail
+      - Juniper/contrail-ansible-deployer
+      - name: Juniper/contrail-kolla-ansible
         override-checkout: contrail/ocata
-      - tungstenfabric/test
+      - Juniper/contrail-test
     vars:
       cloud_orchestrator: openstack
       openstack_version: ocata
@@ -150,10 +164,10 @@
       openshift_deployment_type: openshift-enterprise
       contrail_image_os: rhel
     required-projects:
-      - name: tungstenfabric-tools/openshift-ansible
+      - name: Juniper/openshift-ansible
         override-checkout: release-3.9-contrail
     roles:
-      - zuul: tungstenfabric-tools/openshift-ansible
+      - zuul: Juniper/openshift-ansible
     nodeset:
       nodes:
         - name: openshift-master
@@ -177,7 +191,7 @@
       openshift_deployment_type: openshift-enterprise
       contrail_image_os: rhel
     required-projects:
-      - name: tungstenfabric-tools/openshift-ansible
+      - name: Juniper/openshift-ansible
         override-checkout: release-3.9-contrail
     nodeset:
       nodes:
@@ -210,7 +224,6 @@
     nodeset: ubuntu-xenial
     vars:
       release_type: nightly
-      setup_docker_registry: true
 
 - job:
     name: build-third-party-rpms-centos7
@@ -227,6 +240,17 @@
     nodeset: builder-centos-7
 
 - job:
+    name: generate-build-change-info
+    parent: contrail-src-base
+    description: |
+      This job generates a HTML report of changes included in the last nightly
+      build.
+    run: playbooks/generate-build-change-info/run.yaml
+    required-projects:
+      - tungsten-infra/ci-utils
+    nodeset: builder-centos-7
+
+- job:
     name: generate-build-change-info-czj
     parent: contrail-src-base
     description: |
@@ -234,7 +258,7 @@
       build.
     run: playbooks/generate-build-change-info-czj/run.yaml
     required-projects:
-      - tungstenfabric-infra/ci-utils
+      - tungsten-infra/ci-utils
     nodeset: builder-centos-7
 
 - job:
@@ -251,8 +275,6 @@
       This job builds and publishes developer-sandbox container.
     parent: dev-env-base
     run: playbooks/publish-dev-env/run.yaml
-    vars:
-      setup_docker_registry: True
 
 - job:
     name: contrail-windows-test-cad
@@ -269,7 +291,7 @@
     branches: ^(?!(R5\.0|release-3\.9-contrail)).*$
     run: playbooks/contrail-build-test-containers/run.yaml
     required-projects:
-      - tungstenfabric/test
+      - Juniper/contrail-test
     nodeset: builder-centos-7
 
 - job:
@@ -281,7 +303,7 @@
     override-checkout: R5.0
     run: playbooks/contrail-build-test-containers/run.yaml
     required-projects:
-      - tungstenfabric/test
+      - Juniper/contrail-test
     nodeset: builder-centos-7
 
 - job:
@@ -330,23 +352,23 @@
     nodeset:
       nodes:
         - name: builder
-          label: ubuntu-trusty-builder
+          label: ubuntu-xenial-builder
 
 - job:
     name: contrail-build-win2016
     parent: trigger-win-base
-    branches: ^(master)$
+    branches: ^(R5.1|master)$
     description: This jobs starts Jenkins job in Windows CI. Build only.
     vars:
       manifest_file: windows.xml
       jenkins_job: winci-server-2016-prod-zuulv3
       build_number: 0
-      test_level: Sanity
+      test_level: None
 
 - job:
     name: contrail-alltests-win2016
     parent: trigger-win-base
-    branches: ^(master)$
+    branches: ^(R5.1|master)$
     description: This jobs starts Jenkins job in Windows CI. Builds and runs all tests.
     vars:
       manifest_file: windows.xml

@@ -27,9 +27,10 @@ contrail_configuration:
   CONTROLLER_NODES: '{{ ansible_default_ipv4.address }}'
   CONTROL_NODES: '{{ ansible_default_ipv4.address }}'
   PHYSICAL_INTERFACE: ens3
-  VROUTER_GATEWAY: '{{ ansible_default_ipv4.address }}'
   CONFIG_API_VIP: '{{ ansible_default_ipv4.address }}'
   RABBITMQ_NODE_PORT: 5673
+  CONFIG_DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 10
+  DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 10
 
 deployment:
     orchestrator: '{{ cloud_orchestrator }}'
@@ -41,7 +42,7 @@ orchestrator_configuration:
         password: password
 
 test_configuration:
-    image_web_server: 10.84.5.120
+    image_web_server: {{ image_web_server }}
     use_project_scoped_token: True
     auth_port: 80
     auth_url: http://keystone.openstack.svc.cluster.local:80/v3
