@@ -11,9 +11,9 @@
       roles to prevent total CI meltdown.
     parent: ci-test-base
     required-projects:
-      - Juniper/contrail-project-config
+      - tungstenfabric-infra/project-config
     roles:
-      - zuul: Juniper/zuul-jobs
+      - zuul: tungstenfabric-infra/zuul-jobs
     run: tests/core.yaml
     files:
       - ^roles/acquire-ip-address/.*
@@ -33,9 +33,9 @@
     name: ci-test-contrail-core-base
     parent: ci-test-base
     roles:
-      - zuul: Juniper/zuul-jobs
+      - zuul: tungstenfabric-infra/zuul-jobs
     required-projects:
-      - Juniper/contrail-vnc
+      - tungstenfabric/vnc
     run: tests/contrail-core.yaml
     files:
       - ^roles/zuul-include-vars/.*
@@ -58,7 +58,7 @@
     parent: ci-test-base
     # Required to test repo-sandbox-prepare role
     required-projects:
-      - Juniper/contrail-vnc
+      - tungstenfabric/vnc
     run: tests/packaging.yaml
     files:
       - ^roles/fetch-packages/.*
@@ -82,7 +82,7 @@
     parent: ci-test-base
     # Required to test repo-sandbox-prepare role
     required-projects:
-      - Juniper/contrail-vnc
+      - tungstenfabric/vnc
     run: tests/containers.yaml
     files:
       - ^roles/publish-container-images/.*
@@ -129,17 +129,17 @@
       ansible playbooks and roles.
     pre-run: playbooks/zuul-jobs-linters/pre.yaml
     required-projects:
-      - Juniper/contrail-project-config
-      - Juniper/zuul-jobs
+      - tungstenfabric-infra/project-config
+      - tungstenfabric-infra/zuul-jobs
       - name: Juniper/zuul
         override-checkout: contrail/feature/zuulv3
-      - Juniper/contrail-zuul-jobs
-      - Juniper/contrail-helm-deployer
+      - tungstenfabric-infra/tungsten-zuul-jobs
+      - tungstenfabric-tools/helm-deployer
     vars:
       tox_envlist: linters
       tox_environment:
-        ANSIBLE_ROLES_PATH: ~/src/github.com/Juniper/zuul-jobs/roles:~/src/{{ zuul.project.canonical_hostname }}/Juniper/contrail-zuul-jobs/roles:~/src/{{ zuul.project.canonical_hostname }}/Juniper/contrail-project-config/roles:~/src/{{ zuul.project.canonical_hostname }}/Juniper/contrail-helm-deployer/roles
-        ANSIBLE_LIBRARY: ~/src/github.com/Juniper/zuul/zuul/ansible:~/src/{{ zuul.project.canonical_hostname }}/Juniper/contrail-zuul-jobs/roles/contrail-common-libs2:~/src/{{ zuul.project.canonical_hostname }}/Juniper/contrail-project-config/roles/contrail-common-libs
+        ANSIBLE_ROLES_PATH: ~/src/github.com/tungstenfabric-infra/zuul-jobs/roles:~/src/{{ zuul.project.canonical_hostname }}/tungstenfabric-infra/tungsten-zuul-jobs/roles:~/src/{{ zuul.project.canonical_hostname }}/tungstenfabric-infra/project-config/roles:~/src/{{ zuul.project.canonical_hostname }}/tungstenfabric-tools/helm-deployer/roles
+        ANSIBLE_LIBRARY: ~/src/github.com/tungstenfabric-infra/zuul/zuul/ansible:~/src/{{ zuul.project.canonical_hostname }}/tungstenfabric-infra/tungsten-zuul-jobs/roles/contrail-common-libs2:~/src/{{ zuul.project.canonical_hostname }}/tungstenfabric-infra/project-config/roles/contrail-common-libs
     nodeset: ubuntu-xenial-c
 
 - job:
@@ -156,7 +156,7 @@
       This job is running roles tests for production environment for infra-doc.
     parent: build-infra-doc
     required-projects:
-      - Juniper/contrail-infra-doc
+      - tungstenfabric-infra/docs
     post-run: tests/publish-infra-doc.yaml
     files:
       - ^roles/fetch-docs/.*
@@ -181,7 +181,7 @@
       This job is running syntax and lint check for puppet files for contrail-infra
     run: playbooks/puppet-lint/run.yaml
     required-projects:
-      - Juniper/contrail-infra
+      - tungstenfabric-infra/system-config
     nodeset: builder-ubuntu-xenial
 
 - job:
@@ -192,7 +192,7 @@
     parent: build-third-party-rpms-base
     post-run: tests/publish-rpm-nexus.yaml
     required-projects:
-      - Juniper/contrail-third-party-packages
+      - tungstenfabric-tools/third-party-packages
     files:
       - ^tests/.*
       - ^roles/publish-rpm-nexus/.*

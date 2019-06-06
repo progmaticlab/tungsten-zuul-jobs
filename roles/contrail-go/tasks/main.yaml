@@ -29,14 +29,14 @@
 
 - name: Create directory for Contrail repository within GOPATH
   file:
-    path: '{{ ansible_env.HOME }}/go/src/github.com/Juniper/contrail'
+    path: '{{ ansible_env.HOME }}/go/src/github.com/tungstenfabric/intent-service'
     state: directory
 
 - name: Copy Contrail repository inside GOPATH
-  command: 'cp -r {{ ansible_env.HOME }}/src/{{ zuul.project.canonical_hostname }}/Juniper/contrail {{ ansible_env.HOME }}/go/src/github.com/Juniper/'
+  command: 'cp -r {{ ansible_env.HOME }}/src/{{ zuul.project.canonical_hostname }}/tungstenfabric/intent-service {{ ansible_env.HOME }}/go/src/github.com/tungstenfabric/'
 
 - name: Run deploy-for_k8s script
-  command: '{{ ansible_env.HOME }}/go/src/github.com/Juniper/contrail/tools/deploy-for_k8s.sh'
+  command: '{{ ansible_env.HOME }}/go/src/github.com/tungstenfabric/intent-service/tools/deploy-for_k8s.sh'
   environment:
     PATH: '{{ ansible_env.PATH }}:/usr/go/bin'
   register: deploy_result
@@ -45,7 +45,7 @@
   when: cloud_orchestrator == 'kubernetes'
 
 - name: Run deploy-for_openstack script
-  command: '{{ ansible_env.HOME }}/go/src/github.com/Juniper/contrail/tools/deploy-for_openstack.sh'
+  command: '{{ ansible_env.HOME }}/go/src/github.com/tungstenfabric/intent-service/tools/deploy-for_openstack.sh'
   environment:
     PATH: '{{ ansible_env.PATH }}:/usr/go/bin'
   register: deploy_result
